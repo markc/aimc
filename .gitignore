@@ -21,7 +21,8 @@
 /public/js
 /public/storage
 /bootstrap/cache
-/storage
+/storage/*
+!/storage/**/.gitignore
 /vendor
 Homestead.json
 Homestead.yaml

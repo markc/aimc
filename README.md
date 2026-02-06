@@ -331,4 +331,4 @@ composer test     # Run PHPUnit tests
 
 ## License
 
-MIT
+MIT License - Copyright (c) 2025 Mark Constable <mc@netserva.org>

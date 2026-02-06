@@ -22,6 +22,7 @@ A reusable AI chat assistant component for Laravel applications using Anthropic'
 - Laravel 10+ / 11+ / 12+
 - Filament 4+ / 5+
 - Livewire 3+ / 4+
+- `@tailwindcss/typography` (for prose-styled markdown rendering)
 
 ## Installation
 
@@ -191,6 +192,54 @@ In `config/ai-assistant.php`:
 ],
 ```
 
+### Markdown / Prose Typography
+
+AI responses are rendered as HTML via `Str::markdown()` and styled with Tailwind's [typography plugin](https://tailwindcss.com/docs/typography-plugin). To enable this in your project:
+
+1. Install the plugin:
+
+```bash
+npm install -D @tailwindcss/typography
+```
+
+2. Add to your `resources/css/app.css`:
+
+```css
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+```
+
+3. Create a Filament theme at `resources/css/filament/admin/theme.css`:
+
+```css
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+@plugin '@tailwindcss/typography';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+@source '../../../../packages/ai-assistant/resources/views/**/*';
+```
+
+4. Register the theme in your `AdminPanelProvider.php`:
+
+```php
+->viteTheme('resources/css/filament/admin/theme.css')
+```
+
+5. Add the theme to your `vite.config.js` inputs:
+
+```js
+input: ['resources/css/app.css', 'resources/js/app.js', 'resources/css/filament/admin/theme.css'],
+```
+
+6. Rebuild assets:
+
+```bash
+npm run build
+```
+
+This gives AI responses proper styling for headings, code blocks, lists, tables, blockquotes, and more — in both light and dark mode.
+
 ### Custom Styling
 
 Publish views and modify:
@@ -229,4 +278,4 @@ packages/ai-assistant/
 
 ## License
 
-MIT
+MIT License - Copyright (c) 2025 Mark Constable <mc@netserva.org>

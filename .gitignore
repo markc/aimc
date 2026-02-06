@@ -14,10 +14,14 @@
 /auth.json
 /node_modules
 /public/build
+/public/css
+/public/favicon.ico
+/public/fonts
 /public/hot
+/public/js
 /public/storage
-/storage/*.key
-/storage/pail
+/bootstrap/cache
+/storage
 /vendor
 Homestead.json
 Homestead.yaml

@@ -18,6 +18,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Markc\AiAssistant\AiAssistantServiceProvider;
+use Markc\Dictation\DictationServiceProvider;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -35,6 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
                 AiAssistantServiceProvider::getFilamentPage(),
+                DictationServiceProvider::getFilamentPage(),
             ])
             ->widgets([
                 Widgets\AccountWidget::class,

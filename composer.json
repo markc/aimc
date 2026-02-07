@@ -9,6 +9,10 @@
         {
             "type": "path",
             "url": "packages/ai-assistant"
+        },
+        {
+            "type": "path",
+            "url": "packages/dictation"
         }
     ],
     "require": {
@@ -16,7 +20,8 @@
         "filament/filament": "^5.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "markc/ai-assistant": "@dev"
+        "markc/ai-assistant": "@dev",
+        "markc/dictation": "@dev"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -87,7 +92,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "codewithkyrian/platform-package-installer": true
         }
     },
     "minimum-stability": "stable",

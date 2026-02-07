@@ -4,3 +4,4 @@
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 @source '../../../../packages/ai-assistant/resources/views/**/*';
+@source '../../../../packages/dictation/resources/views/**/*';

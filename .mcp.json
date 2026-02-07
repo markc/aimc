@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "dictation": {
+      "command": "/usr/sbin/php",
+      "args": ["/home/markc/.gh/aimc/packages/dictation/server/dictation-mcp.php"]
+    }
+  }
+}

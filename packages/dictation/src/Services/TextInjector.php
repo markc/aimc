@@ -13,9 +13,19 @@ class TextInjector
         $this->injector = config('dictation.injector', 'wtype');
     }
 
+    public function isCliContext(): bool
+    {
+        return app()->runningInConsole();
+    }
+
     public function inject(string $text): bool
     {
         if (empty(trim($text))) {
+            return false;
+        }
+
+        // Desktop injection only works from CLI (artisan commands / toggle script)
+        if (! $this->isCliContext()) {
             return false;
         }
 

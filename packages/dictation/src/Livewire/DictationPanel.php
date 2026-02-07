@@ -2,6 +2,7 @@
 
 namespace Markc\Dictation\Livewire;
 
+use Filament\Notifications\Notification;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Markc\Dictation\Models\DictationSetting;
@@ -63,8 +64,9 @@ class DictationPanel extends Component
             $service->startRecording();
             $this->isRecording = true;
             $this->lastTranscription = null;
+            Notification::make()->title('Recording started')->success()->send();
         } catch (\Throwable $e) {
-            $this->dispatch('notify', type: 'danger', message: $e->getMessage());
+            Notification::make()->title('Recording failed')->body($e->getMessage())->danger()->send();
         }
     }
 
@@ -78,12 +80,15 @@ class DictationPanel extends Component
                 $this->lastTranscription = $result->text;
                 $this->lastProcessingMs = $result->processingMs;
                 $this->lastModel = $result->model;
+                // Copy to browser clipboard for easy pasting
+                $this->dispatch('copy-to-clipboard', text: $result->text);
+                Notification::make()->title('Transcription complete — copied to clipboard')->body($result->text)->success()->send();
             } else {
-                $this->dispatch('notify', type: 'warning', message: 'No audio captured.');
+                Notification::make()->title('No audio captured')->warning()->send();
             }
         } catch (\Throwable $e) {
             $this->isRecording = false;
-            $this->dispatch('notify', type: 'danger', message: $e->getMessage());
+            Notification::make()->title('Transcription failed')->body($e->getMessage())->danger()->send();
         }
     }
 
@@ -94,9 +99,9 @@ class DictationPanel extends Component
 
         if ($service->injectText($transcription->text)) {
             $transcription->update(['injected' => true]);
-            $this->dispatch('notify', type: 'success', message: 'Text injected.');
+            Notification::make()->title('Text injected')->success()->send();
         } else {
-            $this->dispatch('notify', type: 'danger', message: 'Injection failed.');
+            Notification::make()->title('Injection failed')->body('No display available from web context.')->danger()->send();
         }
     }
 
@@ -122,7 +127,7 @@ class DictationPanel extends Component
             'auto_delete_audio' => $this->autoDeleteAudio,
         ]);
 
-        $this->dispatch('notify', type: 'success', message: 'Settings saved.');
+        Notification::make()->title('Settings saved')->success()->send();
     }
 
     public function downloadModel(string $model): void
@@ -130,9 +135,9 @@ class DictationPanel extends Component
         try {
             $service = app(DictationService::class);
             $service->downloadModel($model);
-            $this->dispatch('notify', type: 'success', message: "Model '{$model}' downloaded.");
+            Notification::make()->title("Model '{$model}' downloaded")->success()->send();
         } catch (\Throwable $e) {
-            $this->dispatch('notify', type: 'danger', message: $e->getMessage());
+            Notification::make()->title('Download failed')->body($e->getMessage())->danger()->send();
         }
     }
 
@@ -141,9 +146,9 @@ class DictationPanel extends Component
         try {
             $service = app(DictationService::class);
             $service->deleteModel($model);
-            $this->dispatch('notify', type: 'success', message: "Model '{$model}' deleted.");
+            Notification::make()->title("Model '{$model}' deleted")->success()->send();
         } catch (\Throwable $e) {
-            $this->dispatch('notify', type: 'danger', message: $e->getMessage());
+            Notification::make()->title('Delete failed')->body($e->getMessage())->danger()->send();
         }
     }
 

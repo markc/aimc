@@ -91,6 +91,21 @@
                 >
                     <x-filament::icon icon="heroicon-o-paper-clip" class="h-5 w-5" />
                 </button>
+                @if (class_exists(\Markc\Dictation\Services\AudioRecorder::class))
+                    <button
+                        type="button"
+                        wire:click="toggleVoiceInput"
+                        @disabled($isLoading)
+                        style="display: flex; align-items: center; justify-content: center; padding: 0.5rem; border: none; background: none; cursor: pointer; {{ $isRecordingVoice ? 'color: rgb(239 68 68);' : 'color: rgb(107 114 128);' }}"
+                        title="{{ $isRecordingVoice ? 'Stop recording' : 'Voice input' }}"
+                    >
+                        @if ($isRecordingVoice)
+                            <x-filament::icon icon="heroicon-s-stop" class="h-5 w-5 animate-pulse" />
+                        @else
+                            <x-filament::icon icon="heroicon-o-microphone" class="h-5 w-5" />
+                        @endif
+                    </button>
+                @endif
                 <div style="flex: 1;">
                     <x-filament::input.wrapper>
                         <x-filament::input

@@ -24,6 +24,8 @@ class ChatBox extends Component
 
     public bool $isLoading = false;
 
+    public bool $isRecordingVoice = false;
+
     /** @var TemporaryUploadedFile|null */
     public $attachment = null;
 
@@ -211,6 +213,57 @@ class ChatBox extends Component
     {
         $this->conversationId = $id;
         unset($this->conversation, $this->chatMessages);
+    }
+
+    public function toggleVoiceInput(): void
+    {
+        if ($this->isRecordingVoice) {
+            $this->stopVoiceInput();
+        } else {
+            $this->startVoiceInput();
+        }
+    }
+
+    public function startVoiceInput(): void
+    {
+        if (! class_exists(\Markc\Dictation\Services\AudioRecorder::class)) {
+            return;
+        }
+
+        try {
+            app(\Markc\Dictation\Services\AudioRecorder::class)->start();
+            $this->isRecordingVoice = true;
+        } catch (\Throwable $e) {
+            $this->dispatch('ai-assistant:voice-error', message: $e->getMessage());
+        }
+    }
+
+    public function stopVoiceInput(): void
+    {
+        if (! class_exists(\Markc\Dictation\Services\AudioRecorder::class)) {
+            return;
+        }
+
+        $this->isRecordingVoice = false;
+
+        try {
+            $recorder = app(\Markc\Dictation\Services\AudioRecorder::class);
+            $audioFile = $recorder->stop();
+
+            if ($audioFile && file_exists($audioFile)) {
+                $transcriber = app(\Markc\Dictation\Services\WhisperTranscriber::class);
+                $result = $transcriber->transcribe($audioFile);
+                $text = trim($result->text);
+
+                if ($text !== '') {
+                    $this->input = $this->input !== '' ? $this->input.' '.$text : $text;
+                }
+
+                @unlink($audioFile);
+            }
+        } catch (\Throwable $e) {
+            $this->dispatch('ai-assistant:voice-error', message: $e->getMessage());
+        }
     }
 
     public function render()
